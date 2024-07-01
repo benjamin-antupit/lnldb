@@ -60,6 +60,7 @@ django-polymorphic
 fuzzywuzzy
 pysaml2
 -e git+https://github.com/WPI-LNL/django-saml2-auth.git@6348b4efcc7fc99dff5303846c60785026f67116#egg=django_saml2_auth
+django-multiselectfield
 django-jchart
 django-semanticui-forms
 filetype
