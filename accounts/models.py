@@ -5,10 +5,11 @@ from django.db.models import (Model, BooleanField, CharField, IntegerField, BigI
                               SET_NULL, signals)
 from django.core.validators import MinValueValidator,MaxValueValidator
 from django.utils import timezone
-from multiselectfield import MultiSelectField
 from django.conf import settings
 from six import python_2_unicode_compatible
 from django.dispatch import receiver
+from django.forms import MultipleChoiceField
+from django.forms.widgets import CheckboxSelectMultiple
 
 from data.storage import OverwriteStorage
 from events.models import Organization
@@ -248,11 +249,12 @@ class UserPreferences(Model):
     rt_token = CharField(blank=True, null=True, verbose_name="RT Auth Token", max_length=256)
 
     # Communication Preferences
-    cc_add_subscriptions = MultiSelectField(choices=(('email', 'Email'), ('slack', 'Slack Notification')),
-                                            default='email', blank=True, null=True)
+    cc_add_subscriptions = MultipleChoiceField(choices=(('email', 'Email'), ('slack', 'Slack Notification')),
+                                            initial=['email'], 
+                                            widget=CheckboxSelectMultiple) # TO FIX
 
-    cc_report_reminders = CharField(choices=(('email', 'Email'), ('slack', 'Slack Notification'), ('all', 'Both')),
-                                    default='email', max_length=12)
+    cc_report_reminders = CharField(choices=(('email', 'Email'), ('slack', 'Slack Notification'), ('all', 'Both')), default='email', 
+                                    max_length=12)
 
     event_edited_notification_methods = CharField(
         choices=(('email', 'Email'), ('slack', 'Slack Notification'), ('all', 'Both')),
@@ -260,10 +262,10 @@ class UserPreferences(Model):
         max_length=12
     )
 
-    event_edited_field_subscriptions = MultiSelectField(
-        choices=event_fields,
-        default=['location', 'datetime_setup_complete', 'datetime_start', 'datetime_end']
-    )
+    event_edited_field_subscriptions = MultipleChoiceField(
+        choices=event_fields, widget=CheckboxSelectMultiple,
+        initial=['location', 'datetime_setup_complete', 'datetime_start', 'datetime_end']
+    ) # TO FIX
 
     ignore_user_action = BooleanField(
         default=False, help_text="Uncheck this to ignore notifications for actions triggered by the user"
